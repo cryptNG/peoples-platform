@@ -656,7 +656,7 @@ html {
   
   
   .container-default {
-    max-width: 1300px;
+    max-width: 1320px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 24px;
@@ -1074,7 +1074,7 @@ html {
   
   .section.hero {
     padding-top: 1406px;
-    top: 140px;
+    top: 125px;
     position: relative;
     overflow: hidden;
     background-image: url(home_background.png);
