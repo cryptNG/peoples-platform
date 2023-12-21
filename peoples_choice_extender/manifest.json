@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Peoples Choice Extender",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/watch*"],
+      "js": ["pages/youtube.js"],
+      "css": ["styles/buttonStyles.css"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "img/16.png",
+      "48": "img/48.png",
+      "64": "img/64.png",
+      "128": "img/128.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+        "resources": [
+            "lib/inject_metamaskInteraction.js",
+            "lib/inject_contentPageInteractions.js",
+            "styles/buttonStyles.css",
+            "lib/ethers.min-6.8.1.js"
+        ],
+        "matches": ["<all_urls>"]
+    }
+  ]
+}
