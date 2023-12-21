@@ -19,6 +19,12 @@
     </head>
     <body style="opacity: 1;" class="bg-neutral">
         <div class="dashboard-panel">
+            <h1>Empowerment Dashboard: Nurturing Censorship-Free Expression</h1>
+            <span>
+                Welcome to the heartbeat of our platform – a space where transparency reigns and every interaction is a step towards a censorship-free world. Our dashboard offers a real-time glimpse into the empowering dynamics of donations, votes, and fair distribution within our community. Here, every contribution nurtures the growth of free speech and creative expression. 
+            </span>
+        </div>
+        <div class="dashboard-panel">
             <h3>Donations in xDai (Based on DAI the USD pegged Stablecoin)</h3>
             <div id="donation-month-buckets">
                 
@@ -74,6 +80,38 @@
                 </table>
             </div>
         </div>
+        <div class="dashboard-panel">
+            <h3>Most recent votes</h3>
+            <div id="recent-votes">
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Title</th>
+                            <th>Youtube Link</th>
+                        </tr>
+                    </thead>
+                    <tbody class="list">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="dashboard-panel">
+            <h3>Platform donations</h3>
+            <div id="platform-donations">
+                
+                <table>
+                    <thead>
+                        
+                    </thead>
+                    <tbody class="list">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <style>
             body{
                 font-family: DM Sans, sans-serif;
@@ -115,6 +153,10 @@
                 color: white;
                 background-color: var(--primary-1);
                 
+            }
+
+            .dashboard-panel>h1{
+                color: var(--fourth-5);
             }
 
             .dashboard-panel .votee-word{
@@ -227,7 +269,13 @@
                 color: var(--primary-1);
             }
 
-           
+            tbody.list td{
+                padding: 2px 5px;
+                text-align: left;
+            }
+            tbody.list td .url{
+                color: var(--third-5);
+            }
         </style>
         <script>
             function updateDonations(donations){
@@ -431,6 +479,91 @@
                     tr.appendChild(td);
                 }
                 tb.appendChild(tr);
+            
+            }
+
+            function updateRecentVotes(votes){
+                
+                
+            
+
+                const tb = document.querySelector('#recent-votes table tbody');
+                
+                votes.reverse().forEach((v)=>{
+
+                
+                    const tr = document.createElement("tr");
+                    let td = document.createElement("td");
+                    let span = document.createElement("span");
+                    span.classList="vote";
+                    span.innerHTML=v.up?"⇑":"⇓";
+                    td.appendChild(span);
+                    tr.appendChild(td);
+
+
+                    td = document.createElement("td");
+                    span = document.createElement("span");
+                    span.classList="title";
+                    span.innerHTML=v.title;
+                    td.appendChild(span);
+                    tr.appendChild(td);
+                    
+                    td = document.createElement("td");
+                    a = document.createElement("a");
+                    a.href=v.url;
+                    a.target="_blank";
+                    a.classList="url";
+                    a.innerHTML=v.url.replace('https://www.youtube.com/watch?v=','');
+                    td.appendChild(a);
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+                });
+                
+            
+            }
+
+            function updateDonated(donated){
+                
+                
+            
+
+                const tb = document.querySelector('#platform-donations table tbody');
+                
+                donated.reverse().forEach((d)=>{
+
+                
+                    const tr = document.createElement("tr");
+                    let td = document.createElement("td");
+                    let span = document.createElement("span");
+                    span.classList="name";
+                    span.innerHTML=d.name === ''?"Anonymous":d.name;
+                    td.appendChild(span);
+                    tr.appendChild(td);
+
+
+                    td = document.createElement("td");
+                    span = document.createElement("span");
+                    span.classList="amount";
+                    span.innerHTML=(Number(d.donatedFinney) / 1000).toFixed(3);
+                    td.appendChild(span);
+                    tr.appendChild(td);
+                    
+                    td = document.createElement("td");
+                    span = document.createElement("span");
+                    span.classList="month";
+                    span.innerHTML=d.month;
+                    td.appendChild(span);
+                    tr.appendChild(td);
+
+                    td = document.createElement("td");
+                    span = document.createElement("span");
+                    span.classList="year";
+                    span.innerHTML=d.year;
+                    td.appendChild(span);
+                    tr.appendChild(td);
+                    tb.appendChild(tr);
+                });
+                
             
             }
 
@@ -744,17 +877,21 @@
 
             let provider ;
             let signer ;
+            let signerAddress ;
             let contract ;
 
             let lastVotedBlock=0;
+            let lastDonatedBlock=0;
 
-            let cachedVotes=[];
+            let cachedVoted=[];
+            let cachedDonated=[];
 
             async function initiateContract()
             {
                 
                 provider = new ethers.BrowserProvider(window.ethereum);
                 signer = await provider.getSigner();
+                signerAddress= await signer.getAddress();
 
                 
                 // Get the current chain ID from MetaMask
@@ -823,12 +960,12 @@
                     const eventFilter = contract.filters.Voted();
                     eventFilter.toBlock=await provider.getBlockNumber();
                     eventFilter.fromBlock=lastVotedBlock === 0 ? 0:lastVotedBlock;
-                    if(eventFilter.fromBlock===eventFilter.toBlock) return cachedVotes;
+                    if(eventFilter.fromBlock===eventFilter.toBlock) return cachedVoted;
                     lastVotedBlock=eventFilter.toBlock;
                     let events = await contract.queryFilter('Voted',0, eventFilter.toBlock);
 
                 
-                    let votes=cachedVotes;
+                    let votes=cachedVoted;
                     console.debug(events);
                     for (const log of events) {
                     const logId = log.blockNumber * 100000+ log.index;
@@ -836,7 +973,7 @@
                     console.log(`url:${data.url},up:${data.up},title:${data.title},receiver:${data.receiver},sender:${data.sender},month:${data.month},year:${data.year}`);
                     data.logId=logId;
                     data.year =Number(data.year);
-                    if(cachedVotes.filter((awd)=>awd.logId===logId).length===0) votes.push({
+                    if(cachedVoted.filter((awd)=>awd.logId===logId).length===0) votes.push({
                         url:data.url,
                         up:data.up,
                         title:data.title,
@@ -848,14 +985,49 @@
                     });
                     }
                     
-                    cachedVotes=votes;
+                    cachedVoted=votes;
                     
-                    return cachedVotes;
+                    return cachedVoted;
 
                 } catch (error) {
                     console.error(error);
                 }
             }
+            async function asyncGetDonated(){
+               
+               try {
+                   const eventFilter = contract.filters.Donated();
+                   const toBlock=await provider.getBlockNumber();
+                   const fromBlock=lastDonatedBlock === 0 ? 0:lastDonatedBlock;
+                   if(fromBlock===toBlock) return cachedVoted;
+                   lastDonatedBlock=toBlock;
+                   let events = await contract.queryFilter('Donated',fromBlock, toBlock);
+
+               
+                   let donated=cachedDonated;
+                   console.debug(events);
+                   for (const log of events) {
+                   const logId = log.blockNumber * 100000+ log.index;
+                   const data = contract.interface.decodeEventLog("Donated",log.data);
+                   console.log(`donatedFinney:${data.donatedFinney},name:${data.name},months:${data.months},currentMonth:${data.currentMonth},currentYear:${data.currentYear}`);
+                   data.logId=logId;
+                   if(cachedDonated.filter((awd)=>awd.logId===logId).length===0) donated.push({
+                        donatedFinney:data.donatedFinney*data.months,
+                        name:data.name,
+                        month:data.currentMonth,
+                        year:data.currentYear,
+                       logId:logId
+                   });
+                   }
+                   
+                   cachedDonated=donated;
+                   
+                   return cachedDonated;
+
+               } catch (error) {
+                   console.error(error);
+               }
+           }
             initiateContract().then(()=>{
                 asyncGetDonations().then((donations)=>{
                     updateDonations(donations);
@@ -864,14 +1036,18 @@
                 asyncGetVotes().then((votes)=>{
                  
                     let votesGrpByDate = votes.reduce((a,c)=>{
-                        if(a[`id${c.year*12+c.month-1}`]=== undefined){
-                            a[`id${c.year*12+c.month-1}`]={
+                        let data = a[`id${c.year*12+c.month-1}`];
+                        if(data=== undefined){
+                            data={
                                 month:c.month,
                                 year:c.year,
-                                votes:[c]
+                                votes:[c],
+                                sumVotes:c.up?1:-1
                             }
+                            a[`id${c.year*12+c.month-1}`]=data;
                         }else{
-                            a[`id${c.year*12+c.month-1}`].votes.push(c);
+                            data.votes.push(c);
+                            data.sumVotes+=c.up?1:-1;
                         }
                         return a;
                     },{});
@@ -899,7 +1075,16 @@
                             }
                             return a;
                         },{contentHash:[],count:0}).count;
-                    })
+                        votesGrpByDate[k].receiverVotes=votesGrpByDate[k].votes.reduce((a,c)=>{
+                            if( c.receiver===signerAddress){
+                                a += c.up?1:-1;
+                            }
+                            return a;
+                        },0);
+                        votesGrpByDate[k].votesShare=votesGrpByDate[k].receiverVotes/votesGrpByDate[k].sumVotes
+                    });
+
+                    const last15Votes = votes.slice(-15);
                     
                     const maxUniqueContent = Math.max(Object.keys(votesGrpByDate).map((k)=>votesGrpByDate[k].uniqueContent));
                     const maxUniqueSender = Math.max(Object.keys(votesGrpByDate).map((k)=>votesGrpByDate[k].uniqueSender));
@@ -912,6 +1097,11 @@
                     });
                     updateOverallVotes(votesGrpByDate);
                     updateUniqueContentReceiverSender(votesGrpByDate);
+                    updateRecentVotes(last15Votes);
+                });
+
+                asyncGetDonated().then((donated)=>{
+                    updateDonated(donated.slice(-20));
                 });
             });
 
