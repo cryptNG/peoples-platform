@@ -10,82 +10,6 @@ const host = '0.0.0.0';
 
 const contractABI = [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_contractOwner",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "facetAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "enum IDiamondCut.FacetCutAction",
-            "name": "action",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes4[]",
-            "name": "functionSelectors",
-            "type": "bytes4[]"
-          }
-        ],
-        "internalType": "struct IDiamondCut.FacetCut[]",
-        "name": "_diamondCut",
-        "type": "tuple[]"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "initContract",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes",
-            "name": "initData",
-            "type": "bytes"
-          }
-        ],
-        "internalType": "struct Diamond.Initialization[]",
-        "name": "_initializations",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "constructor"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "fallback"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint16",
-        "name": "currentMonth",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentYear",
-        "type": "uint16"
-      }
-    ],
-    "name": "init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -222,6 +146,18 @@ const contractABI = [
         "internalType": "address",
         "name": "sender",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "month",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "year",
+        "type": "uint16"
       }
     ],
     "name": "Voted",
@@ -238,21 +174,54 @@ const contractABI = [
         "internalType": "string",
         "name": "name",
         "type": "string"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentMonth",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentYear",
-        "type": "uint16"
       }
     ],
     "name": "donate",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "donationBuckets",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint16",
+            "name": "startMonth",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "startYear",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint32[48]",
+            "name": "donationBuckets",
+            "type": "uint32[48]"
+          }
+        ],
+        "internalType": "struct PeoplesPlatformFacet.DonationBuckets",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "myFame",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -270,6 +239,19 @@ const contractABI = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "totalFame",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address payable",
@@ -284,16 +266,6 @@ const contractABI = [
       {
         "internalType": "uint16",
         "name": "year",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentMonth",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentYear",
         "type": "uint16"
       }
     ],
@@ -323,243 +295,11 @@ const contractABI = [
         "internalType": "string",
         "name": "title",
         "type": "string"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentMonth",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "currentYear",
-        "type": "uint16"
       }
     ],
     "name": "vote",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "facetAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "enum IDiamondCut.FacetCutAction",
-            "name": "action",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes4[]",
-            "name": "functionSelectors",
-            "type": "bytes4[]"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct IDiamondCut.FacetCut[]",
-        "name": "_diamondCut",
-        "type": "tuple[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_init",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "_calldata",
-        "type": "bytes"
-      }
-    ],
-    "name": "DiamondCut",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "facetAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "enum IDiamondCut.FacetCutAction",
-            "name": "action",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes4[]",
-            "name": "functionSelectors",
-            "type": "bytes4[]"
-          }
-        ],
-        "internalType": "struct IDiamondCut.FacetCut[]",
-        "name": "_diamondCut",
-        "type": "tuple[]"
-      },
-      {
-        "internalType": "address",
-        "name": "_init",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_calldata",
-        "type": "bytes"
-      }
-    ],
-    "name": "diamondCut",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "owner_",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes4",
-        "name": "_functionSelector",
-        "type": "bytes4"
-      }
-    ],
-    "name": "facetAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "facetAddress_",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "facetAddresses",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "facetAddresses_",
-        "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_facet",
-        "type": "address"
-      }
-    ],
-    "name": "facetFunctionSelectors",
-    "outputs": [
-      {
-        "internalType": "bytes4[]",
-        "name": "facetFunctionSelectors_",
-        "type": "bytes4[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "facets",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "facetAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes4[]",
-            "name": "functionSelectors",
-            "type": "bytes4[]"
-          }
-        ],
-        "internalType": "struct IDiamondLoupe.Facet[]",
-        "name": "facets_",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes4",
-        "name": "_interfaceId",
-        "type": "bytes4"
-      }
-    ],
-    "name": "supportsInterface",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ];
