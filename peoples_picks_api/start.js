@@ -630,16 +630,16 @@ app.get('/aggregate', async (req, res) => {
     if (chainIdentifier) {
       const selectedChain = chainData[chainIdentifier];
       console.log('aggregate started:');
-      console.log('selectedChain', selectedChain);
+      //console.log('selectedChain', selectedChain);
       console.log('page', page);
 
 
       if (selectedChain) {
         // Change the active chain
-
+        console.log(`Active chain changed to ${chainIdentifier}`);
         // Check if the chain data is already loaded
           await loadData(selectedChain);
-          console.log(`Active chain changed to ${chainIdentifier}`);
+          
         
   
       } else {
@@ -762,19 +762,20 @@ async function getVoteEvents(chain) {
     let events = [];
     try {
             const latestBlockNumber = await chain.provider.getBlockNumber();
-         
+            console.log('latestBlockNumber:'+latestBlockNumber);
 
             const eventFilter = chain.contract.filters.Voted();
             while(events.length<=30 &&  chain.fromBlock <= latestBlockNumber){
               eventFilter.fromBlock = chain.fromBlock;
-              eventFilter.toBlock = chain.fromBlock + 100 < latestBlockNumber?chain.fromBlock + 100:latestBlockNumber;
-              //console.log(eventFilter);
-              const logs = await chain.provider.getLogs(eventFilter);
+              eventFilter.toBlock = chain.fromBlock + 500 < latestBlockNumber?chain.fromBlock + 500:latestBlockNumber;
+              console.log(eventFilter);
+              const logs = await chain.contract.queryFilter('Voted',eventFilter.fromBlock,eventFilter.toBlock) 
+            
               console.log('Loading Initial Data...');
               console.log('new fromBlock1:', chain.fromBlock);
               for (const log of logs) {
               try {
-                const data = chain.interface.decodeEventLog("Voted", log.data);
+                const data = chain.contract.interface.decodeEventLog("Voted", log.data);
 
                 if (data.title !== '') {
                   events.push({url: data.url, upvote: data.up, title: data.title});
