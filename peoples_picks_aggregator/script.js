@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Initial fetch
-    fetch(`https://www.caleidoscode.io/api/aggregate?chain=${activeChain}&p=${currentPage}`)
+    fetch(`https://voicesunleashed.org/api/aggregate?chain=${activeChain}&p=${currentPage}`)
         .then(response => response.json())
         .then(newData => {
             data = newData;
