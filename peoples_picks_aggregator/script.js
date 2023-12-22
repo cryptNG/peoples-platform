@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getActiveChainFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('chain') || '501984';
+        return urlParams.get('chain') || '100';
     }
 
     function updateUrl() {
