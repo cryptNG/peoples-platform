@@ -1,1 +1,190 @@
 
+body{
+    font-family: DM Sans, sans-serif;
+}
+
+.bg-neutral {
+    background-color: var(--secondary-1);
+}
+
+:root {
+    --primary-1: #355c7d;
+    --primary-2: #6c5b7b;
+    --primary-3: #c06c84;
+    --primary-4: #f67280;
+    --primary-5: #f8b195;
+    --secondary-1: #1e3d58;
+    --secondary-2: #453653;
+    --secondary-3: #98455d;
+    --secondary-4: #d64a58;
+    --secondary-5: #d48667;
+    --third-1: #6289ab;
+    --third-2: #9d91a8;
+    --third-3: #e396ac;
+    --third-4: #f7949e;
+    --third-5: #f7c9b7;
+    --fourth-1: #94b7d5;
+    --fourth-2: #c7c0cd;
+    --fourth-3: #f7bece;
+    --fourth-4: #f8b9bf;
+    --fourth-5: #f8e4dd;
+    --fifth-1: #deeefb;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    margin: 0px 10px;
+}
+
+nav button {
+    background-color: transparent;
+    border: 1px solid var(--fourth-1);
+    color: var(--fifth-1);
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+nav button.disabled {
+    cursor: default;
+    color: var(--third-1);
+    border-color: var(--third-1);
+}
+
+.dashboard-panel {
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    color: white;
+    background-color: var(--primary-1);
+    
+}
+
+.dashboard-panel>h1{
+    color: var(--fourth-5);
+}
+
+.dashboard-panel .votee-word{
+    color: var(--primary-5);
+}
+
+.dashboard-panel .content-word{
+    color: var(--primary-4);
+}
+
+.dashboard-panel .creator-word{
+    color: var(--primary-3);
+}
+
+.dashboard-panel>div{
+    min-height:360px;
+    overflow:auto;  
+}
+.dashboard-panel table{
+    table-layout: auto;
+    position: relative;
+    border-spacing: 0;
+    border-collapse: separate;
+    border-radius: 10px;
+    border: 1px solid var(--secondary-1);
+    color: white;
+    
+}
+.dashboard-panel table th:not(:last-child),
+.dashboard-panel table td:not(:last-child) {
+    border-right: 1px solid var(--secondary-1);
+}
+
+.dashboard-panel table>thead>tr:not(:last-child)>th,
+.dashboard-panel table>thead>tr:not(:last-child)>td,
+.dashboard-panel table>tbody>tr:not(:last-child)>th,
+.dashboard-panel table>tbody>tr:not(:last-child)>td,
+.dashboard-panel table>tfoot>tr:not(:last-child)>th,
+.dashboard-panel table>tfoot>tr:not(:last-child)>td,
+.dashboard-panel table>tr:not(:last-child)>td,
+.dashboard-panel table>tr:not(:last-child)>th,
+.dashboard-panel table>thead:not(:last-child),
+.dashboard-panel table>tbody:not(:last-child),
+.dashboard-panel table>tfoot:not(:last-child) {
+    border-bottom: 1px solid var(--secondary-1);
+}
+
+.dashboard-panel table td{
+    padding: 3px;
+    vertical-align: bottom;
+    text-align: center;
+    font-size: smaller;
+}
+
+.bar-chart td{
+    position: relative;
+    min-width: 1.7rem;
+    height:255px;
+}
+.bar-chart td span.bar{
+    display: inline-block;
+    background-color: var(--primary-5);
+    width: 6px;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.bar-chart td span.column-bar{
+    display: inline-block;
+    width: 8px;
+    position: absolute;
+    bottom: 0;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.bar-chart td span.column-bar.col-1{
+    left:0;
+    background-color: var(--primary-5);
+}
+
+.bar-chart td span.column-bar.col-2{
+    left:9px;
+    background-color: var(--primary-4);
+}
+
+.bar-chart td span.column-bar.col-3{
+    background-color: var(--primary-3);
+    left:18px;
+}
+
+.bar-chart td span.tick {
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: bottom left;
+    bottom: 2px;
+    font-family: monospace;
+    /* rotate: -90deg; */
+    line-height: 0.7rem;
+    height: 0.7rem;
+    display: inline-block;
+    font-size: 0.7rem;
+    margin-left: 11px;
+    margin-bottom: 2px;
+}
+
+.bar-chart td span.column-bar>em {
+    rotate: -90deg;
+    transform-origin: bottom left;
+    position: absolute;
+    font-size: 0.5rem;
+    bottom: 5px;
+    left: 10px;
+    color: var(--primary-1);
+}
+
+tbody.list td{
+    padding: 2px 5px;
+    text-align: left;
+}
+tbody.list td .url{
+    color: var(--third-5);
+}
