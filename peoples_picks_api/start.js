@@ -637,11 +637,11 @@ app.get('/aggregate', async (req, res) => {
       console.log('page', page);
 
 
-      if (selectedChain && selectedChain.data.length < endIndex+1) {
+      if (selectedChain) {
         // Change the active chain
         console.log(`Active chain changed to ${chainIdentifier}`);
         // Check if the chain data is already loaded
-          await loadData(selectedChain);
+          if(selectedChain.data.length < endIndex+1) await loadData(selectedChain);
           
         
   
