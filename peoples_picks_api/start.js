@@ -569,47 +569,37 @@ const chainData = {
     rpcurl: "https://rpc.gnosischain.com",
     contractAddress: '0x9e3B92A7762a810CCe3eF7cEb9B0177c595f463f',
     data: [],
-    latestBlockNumber: 0,
     fromBlock: 31437570,
-    toBlock: 0,
-    lastBlockNumber: undefined,
+    lastBlockNumber: 31437570,
   },
   "501984": {
     rpcurl: "https://testnet.cryptng.xyz:8545",
     contractAddress: "0x188C8d37fb966713CbDc7cCc1A6ed3da060FFac3",
     data: [],
-    latestBlockNumber: 0,
     fromBlock: 4110,
-    toBlock: 0,
-    lastBlockNumber: undefined,
+    lastBlockNumber: 4110,
     
   },
   "10200": {
     rpcurl: "https://rpc.chiadochain.net",
     contractAddress: "0xffC39C76C68834FE1149554Ccc1a76C2F1281beD",
     data: [],
-    latestBlockNumber: 0,
     fromBlock: 7032222,
-    toBlock: 0,
-    lastBlockNumber: undefined,
+    lastBlockNumber: 7032222,
   },
   "534351": {
     rpcurl: "https://sepolia-rpc.scroll.io/",
     contractAddress: "0x314AA36352771307E942FaeD6d8dfB2398916E92",
     data: [],
-    latestBlockNumber: 0,
     fromBlock: 2305820,
-    toBlock: 0,
-    lastBlockNumber: undefined,
+    lastBlockNumber: 2305820,
   },
   "245022926": {
     rpcurl: "https://devnet.neonevm.org",
     contractAddress: "0x9A1554a110A593b5C137643529FAA258a710245C",
     data: [],
-    latestBlockNumber: 0,
     fromBlock: 259098931,
-    toBlock: 0,
-    lastBlockNumber: undefined,
+    lastBlockNumber: 259098931,
   }
 };
 
@@ -771,66 +761,36 @@ async function loadData(chain) {
 async function getVoteEvents(chain) {
     let events = [];
     try {
-        if (chain.lastBlockNumber === undefined) {
-            chain.latestBlockNumber = await chain.provider.getBlockNumber();
-            chain.toBlock = 'latest';
+            const latestBlockNumber = await chain.provider.getBlockNumber();
+         
 
             const eventFilter = chain.contract.filters.Voted();
-            eventFilter.fromBlock = chain.fromBlock;
-            eventFilter.toBlock = chain.toBlock;
-            //console.log(eventFilter);
-            const logs = await chain.provider.getLogs(eventFilter);
-            console.log('Loading Initial Data...');
-            console.log('new fromBlock1:', chain.lastBlockNumber);
-            for (const log of logs) {
-             try {
-              const data = chain.interface.decodeEventLog("Voted", log.data);
-
-              if (data.title !== '') {
-                events.push({url: data.url, upvote: data.up, title: data.title});
-            } else {
-                console.warn('Empty title found in decoded data:', data);
-            }
-            } catch (error) {
-              console.error('Error fetching at initial Load', error);
-             }
-            }
-
-            chain.lastBlockNumber = chain.latestBlockNumber;
-        } else {
-            // Subsequent fetch: get new events from the latest block onwards
-            chain.latestBlockNumber = await chain.provider.getBlockNumber();
-            if (chain.latestBlockNumber === chain.lastBlockNumber) {
-                return events;
-            }
-            chain.fromBlock = chain.lastBlockNumber + 1;
-            chain.toBlock = chain.latestBlockNumber;
-
-            const eventFilter = chain.contract.filters.Voted();
-            eventFilter.fromBlock = chain.fromBlock;
-            eventFilter.toBlock = chain.toBlock;
-            //console.log(eventFilter);
-
-
-            const logs = await chain.provider.getLogs(eventFilter);
-            console.log('Loading New Data...');
-            console.log('new fromBlock2:', chain.lastBlockNumber);
-
-            for (const log of logs) {
+            while(events.length<=30 &&  chain.fromBlock <= latestBlockNumber){
+              eventFilter.fromBlock = chain.fromBlock;
+              eventFilter.toBlock = chain.fromBlock + 500 < latestBlockNumber?chain.fromBlock + 500:latestBlockNumber;
+              //console.log(eventFilter);
+              const logs = await chain.provider.getLogs(eventFilter);
+              console.log('Loading Initial Data...');
+              console.log('new fromBlock1:', chain.fromBlock);
+              for (const log of logs) {
               try {
-                //console.log(log.data);
-
                 const data = chain.interface.decodeEventLog("Voted", log.data);
-                events.push({url: data.url, upvote: data.up, title: data.title});
-              } catch (error) {
-                console.error('Error reinitial load' + error);
+
+                if (data.title !== '') {
+                  events.push({url: data.url, upvote: data.up, title: data.title});
+              } else {
+                  console.warn('Empty title found in decoded data:', data);
               }
-            }  
-            chain.lastBlockNumber = chain.latestBlockNumber;
-        }
+              } catch (error) {
+                console.error('Error fetching at initial Load', error);
+              }
+              }
+              chain.fromBlock=eventFilter.toBlock+1;
+            }
+      
     } catch (error) {
         console.error('Error fetching vote events:', error);
     }
-    console.log(chain.lastBlockNumber);
+    console.log('last block:'+(chain.fromBlock-1));
     return events;
 }
