@@ -612,6 +612,8 @@ const chainData = {
     lastBlockNumber: undefined,
   }
 };
+
+console.log(chainData);
 //loop through chainData object keys and add provider, contract and interfaces
 Object.keys(chainData).forEach(key => {
   let chain = chainData[key];
@@ -619,6 +621,8 @@ Object.keys(chainData).forEach(key => {
   chain.contract = new ethers.Contract(chain.contractAddress, contractABI, chain.provider);
   chain.interface = chain.contract.interface;
 })
+
+
 
 app.use(cors());
 
