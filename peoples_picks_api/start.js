@@ -767,7 +767,7 @@ async function getVoteEvents(chain) {
             const eventFilter = chain.contract.filters.Voted();
             while(events.length<=30 &&  chain.fromBlock <= latestBlockNumber){
               eventFilter.fromBlock = chain.fromBlock;
-              eventFilter.toBlock = chain.fromBlock + 500 < latestBlockNumber?chain.fromBlock + 500:latestBlockNumber;
+              eventFilter.toBlock = chain.fromBlock + 100 < latestBlockNumber?chain.fromBlock + 100:latestBlockNumber;
               //console.log(eventFilter);
               const logs = await chain.provider.getLogs(eventFilter);
               console.log('Loading Initial Data...');
