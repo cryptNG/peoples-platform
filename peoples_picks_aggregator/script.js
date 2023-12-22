@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function fetchDataWithFilterAndChain(filterKeyword, chain) {
         const apiUrl = filterKeyword ?
-            `https://www.caleidoscode.io/api/aggregate?filter=${filterKeyword}&chain=${chain}&p=${currentPage}` :
-            `https://www.caleidoscode.io/api/aggregate?chain=${chain}&p=${currentPage}`;
+            `https://voicesunleashed.org/api/aggregate?filter=${filterKeyword}&chain=${chain}&p=${currentPage}` :
+            `https://voicesunleashed.org/api/aggregate?chain=${chain}&p=${currentPage}`;
     
         fetch(apiUrl)
             .then(response => response.json())
