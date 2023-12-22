@@ -641,7 +641,7 @@ app.get('/aggregate', async (req, res) => {
         // Change the active chain
         console.log(`Active chain changed to ${chainIdentifier}`);
         // Check if the chain data is already loaded
-          if(selectedChain.data.length < endIndex+1) await loadData(selectedChain);
+          loadData(selectedChain);
           
         
   
@@ -697,7 +697,7 @@ app.get('/aggregate', async (req, res) => {
       urlVotesMap.set(key, value);
     });
 
-    const aggregatedData = Array.from(urlVotesMap.values());
+    const aggregatedData = Array.from(urlVotesMap.values()).sort((a,b)=>b.totalVotes-a.totalVotes);
 
     // Paginate data
     const paginatedData = aggregatedData.slice(startIndex, endIndex);
@@ -749,8 +749,12 @@ function getHost(url) {
 
 async function loadData(chain) {
   try {
-    const newData = await getVoteEvents(chain);
-    chain.data = [...chain.data, ...newData];
+    const latestBlockNumber = await chain.provider.getBlockNumber();
+
+    while(chain.fromBlock <= latestBlockNumber){
+      const newData = await getVoteEvents(chain,latestBlockNumber);
+      chain.data = [...chain.data, ...newData];
+    }
     console.log('Data loaded.');
     console.log('Refresh speed:' + refreshInterval);
   } catch (error) {
@@ -758,16 +762,16 @@ async function loadData(chain) {
   }
 }
 
-async function getVoteEvents(chain) {
+async function getVoteEvents(chain,latestBlockNumber) {
     let events = [];
     try {
-            const latestBlockNumber = await chain.provider.getBlockNumber();
+            
             console.log('latestBlockNumber:'+latestBlockNumber);
 
             const eventFilter = chain.contract.filters.Voted();
-            while(events.length<=30 &&  chain.fromBlock <= latestBlockNumber){
+            while(events.length < 30 && chain.fromBlock <= latestBlockNumber){
               eventFilter.fromBlock = chain.fromBlock;
-              eventFilter.toBlock = chain.fromBlock + 500 < latestBlockNumber?chain.fromBlock + 500:latestBlockNumber;
+              eventFilter.toBlock = chain.fromBlock + 1000 < latestBlockNumber?chain.fromBlock + 1000:latestBlockNumber;
               console.log(eventFilter);
               const logs = await chain.contract.queryFilter('Voted',eventFilter.fromBlock,eventFilter.toBlock) 
             
