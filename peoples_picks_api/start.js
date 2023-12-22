@@ -626,6 +626,9 @@ app.get('/aggregate', async (req, res) => {
     const filterKeyword = req.query.filter;
     const page = req.query.p ? parseInt(req.query.p) : 1;
     const chainIdentifier = req.query.chain;
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     
     if (chainIdentifier) {
       const selectedChain = chainData[chainIdentifier];
@@ -634,7 +637,7 @@ app.get('/aggregate', async (req, res) => {
       console.log('page', page);
 
 
-      if (selectedChain) {
+      if (selectedChain && selectedChain.data.length < endIndex+1) {
         // Change the active chain
         console.log(`Active chain changed to ${chainIdentifier}`);
         // Check if the chain data is already loaded
@@ -645,10 +648,7 @@ app.get('/aggregate', async (req, res) => {
       } else {
         return res.status(404).send('Chain identifier not found.');
       }
-    
-
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+  
 
     // Filter data
     let filteredData = selectedChain.data;
