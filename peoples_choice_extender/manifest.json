@@ -9,7 +9,11 @@
       "css": ["styles/buttonStyles.css"]
     }
   ],
+  "permissions": [
+    "storage"
+  ],
   "action": {
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "img/16.png",
       "48": "img/48.png",

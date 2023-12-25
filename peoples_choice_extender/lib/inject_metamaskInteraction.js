@@ -51,6 +51,18 @@ function multiplyDecimalWithBigInt(decimal, bigInt) {
   return (scaledDecimal * bigInt) / BigInt(scaleFactor);
 }
 
+
+function sendVoteSuccessToExtension(upvote) {
+  window.postMessage({ type: "PCE_VOTE_SUCCESS", upvote: upvote }, "*");
+}
+
+function sendVoteErrorToExtension() {
+  window.postMessage({ type: "PCE_VOTE_ERROR" }, "*");
+}
+
+//todo replacing the ui elements breaks the listeners!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//youtube search - open video does not show extension, old implementation
+
 // Function to handle voting transactions
 async function callContractFunctionForVote(receiver, url, upvote, title, handle) {
   if (!ethereum.isMetaMask) {
@@ -58,31 +70,32 @@ async function callContractFunctionForVote(receiver, url, upvote, title, handle)
       return;
   }
 
-
   await initiateContract();
 
   if(receiver == '0x0000000000000000000000000000000000000000')
   {
     console.log('RECEIVER IS NULL ADDRESS');
-    const interim = keccak256('youtube.com/@' +handle);  //todo check if the @ already is there
+    const byteEncodedHandle = ethers.toUtf8Bytes('youtube.com/' + handle);
+    const interim = ethers.keccak256(byteEncodedHandle);  
     console.log('INTERIM: ' + interim);
-    const magicBits = BigInt(0xf000000000000000000000000000000000000000000000000000000000);
+    const magicBits = BigInt(0xf000000000000000000000000000000000000000);
     console.log('receiver: ' + receiver);
-    receiver = (BigInt(receiver)  >> 96n) | magicBits
+    receiver = (BigInt(interim)  >> 96n) | magicBits
+    receiver = "0x"+receiver.toString(16);
   }
-
-
 
   try {
-      const transaction = await contract.vote(url, upvote, receiver, title);
+    transaction = await contract.vote(url, upvote, receiver, title);
       console.log('Vote transaction sent:', transaction.hash);
       await transaction.wait();
+    
       console.log('Vote transaction confirmed');
+      sendVoteSuccessToExtension(upvote);
   } catch (error) {
       console.error('Vote transaction failed:', error);
+      sendVoteErrorToExtension();
   }
 }
-
 
 
 const contractABI = [
@@ -385,7 +398,7 @@ let contractAddressMapping =
   
     [
         {"contractAddress":"0x9e3B92A7762a810CCe3eF7cEb9B0177c595f463f", "chainId": 100}, //gnosis
-        {"contractAddress":"0x188C8d37fb966713CbDc7cCc1A6ed3da060FFac3", "chainId": 501984}, //testnet
+        {"contractAddress":"0x64fc330fA8B6e0858F6f6e2427e22C55F373b327", "chainId": 501984}, //testnet
         {"contractAddress":"0x314AA36352771307E942FaeD6d8dfB2398916E92", "chainId": 534351}, //scroll
         {"contractAddress":"0x9A1554a110A593b5C137643529FAA258a710245C", "chainId": 245022926},
         {"contractAddress":"0xffC39C76C68834FE1149554Ccc1a76C2F1281beD", "chainId": 10200},

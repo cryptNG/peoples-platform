@@ -12,6 +12,10 @@
     transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
   }
 
+  .pce-ext-button.voted{
+    background-color: rgb(99, 99, 99);
+  }
+
   .pce-ext-button:hover {
     background-color: #f0f0f0; /* Hover background color */
     border-color: #d0d0d0; /* Hover border color */
@@ -55,3 +59,7 @@ animation-delay: 250ms;
 #pce-ext-inject .typing span:nth-child(3) {
 animation-delay: 500ms;
 }
+
+
+/* TOAST */
+

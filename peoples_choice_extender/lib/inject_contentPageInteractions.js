@@ -1,12 +1,6 @@
 // Ensure Metamask object is available
 window.ethereum = window.ethereum || {};
 
-// Function to send refresh messages, indicating navigation or scroll events
-function sendRefreshMessageToPageScript() {
-    window.postMessage({ type: "PCE_SITE_NAVIGATED" }, "*");
-    window.postMessage({ type: "PCE_SITE_SCROLLED" }, "*");
-}
-
 // Function to check if the MetaMask wallet is connected
 async function checkIfMetaMaskWalletIsConnected() {
     const accounts = await ethereum.request({ method: 'eth_accounts' });
@@ -48,6 +42,7 @@ async function validateAndConnect(receiver, contentUrl, title) {
     }
 }
 
+
 // Unified event listener for handling both upvote and downvote messages
 window.addEventListener('message', async function (event) {
     try {
@@ -67,22 +62,40 @@ window.addEventListener('message', async function (event) {
                 await validateAndConnect(receiver, contentUrl, title);
                 // TODO: Implement API for wallet validation and temporary wallet creation
                 await callContractFunctionForVote(receiver, contentUrl, event.data.type === "PCE_UPVOTE_CONTENT", title, handle);
+
                 break;
             default:
                 console.debug("Unhandled message type:", event.data.type);
         }
     } catch (error) {
         console.error(error);
+        sendVoteErrorToExtension();
     }
 });
 
-// Event listeners for navigation and scroll events to send refresh messages
-window.navigation.addEventListener("navigate", () => {
-    console.debug('navigate event');
-    sendRefreshMessageToPageScript();
+
+
+
+//PAGE REFRESH AND NAVIGATE TO OTHER PAGES
+
+//reaction or non-reaction to these listeners can be implemented
+//on a per platform basis
+// window.navigation.addEventListener("navigatesuccess",(e)=> {
+//     sendRefreshMessageToContentScript();
+// });
+
+//youtube specific (spa)
+window.addEventListener('yt-page-data-updated', function () {
+    sendRefreshMessageToContentScript();;
 });
 
-window.addEventListener("scroll", () => {
-    console.debug('scroll event');
-    sendRefreshMessageToPageScript();
-});
+// window.addEventListener("scroll", (e) => {
+//     console.log('scroll event');
+//     sendRefreshMessageToContentScript();
+// });
+
+
+function sendRefreshMessageToContentScript() {
+    window.postMessage({ type: "PCE_SITE_NAVIGATED" }, "*");
+   // window.postMessage({ type: "PCE_SITE_SCROLLED" }, "*");
+}
