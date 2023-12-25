@@ -314,7 +314,7 @@ const chainData = {
   },
   "501984": {
     rpcurl: "https://testnet.cryptng.xyz:8545",
-    contractAddress: "0x188C8d37fb966713CbDc7cCc1A6ed3da060FFac3",
+    contractAddress: "0x64fc330fA8B6e0858F6f6e2427e22C55F373b327",
     data: [],
     fromBlock: 4110,
     lastBlockNumber: 4110,
