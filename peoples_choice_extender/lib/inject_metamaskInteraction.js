@@ -85,6 +85,7 @@ async function callContractFunctionForVote(receiver, url, upvote, title, handle)
   }
 
   try {
+    toast('Please check MetaMask!!','Peoples Choice Extender');
     transaction = await contract.vote(url, upvote, receiver, title);
       console.log('Vote transaction sent:', transaction.hash);
       await transaction.wait();
@@ -94,6 +95,7 @@ async function callContractFunctionForVote(receiver, url, upvote, title, handle)
   } catch (error) {
       console.error('Vote transaction failed:', error);
       sendVoteErrorToExtension();
+      toast(error,'Peoples Choice Extender');
   }
 }
 
@@ -406,3 +408,47 @@ let contractAddressMapping =
   ]
 ;
 
+
+
+//TOAST SPECIFICS
+
+const
+  FADE_DUR = 700,
+  MIN_DUR = 2000; //2000
+let toastContain;
+
+function toast(str, title, addClass) {
+  let duration = Math.max(MIN_DUR, str.length * 80);
+  
+  if (!toastContain) {
+    toastContain = document.createElement('div');
+    toastContain.classList.add('pce-toastContain');
+    document.body.appendChild(toastContain);
+  }
+
+  const EL = document.createElement('div');
+  EL.classList.add('pce-toast', addClass);
+  EL.innerText = str;
+  toastContain.prepend(EL);
+  
+
+  const etitle = document.createElement('div');
+  etitle.classList.add('pce-toast-title');
+  etitle.innerText = title;
+  toastContain.prepend(etitle);
+  
+
+  setTimeout(() => EL.classList.add('open'));
+  setTimeout(
+    () => EL.classList.remove('open'),
+    duration
+  );
+  setTimeout(
+    () => {
+      toastContain.removeChild(etitle);
+      toastContain.removeChild(EL);
+
+    },
+    duration + FADE_DUR
+  );
+}

@@ -32,12 +32,14 @@ async function validateAndConnect(receiver, contentUrl, title) {
     // Check for MetaMask wallet connection and attempt to connect if not connected
     const connected = await checkIfMetaMaskWalletIsConnected();
     if (!connected) {
+        toast('Hey! Thank you for helping us built a better, censorship-free internet. - To join our cause, please open MetaMask now to connect to GNOSIS!','Peoples Choice Extender');
         await connectMetaMaskWallet();
     }
 
     // Check for the presence of 'ethers' library and handle its absence
     if (typeof ethers === 'undefined') {
         console.debug("ETHERS WAS NOT FOUND");
+        toast('Hey! Thank you for helping us built a better, censorship-free internet. - Sadly, you dont have MetaMask installed, so you cannot use this extension!','Peoples Choice Extender');
         // Add handling or notification if ethers is not available
     }
 }
@@ -69,6 +71,7 @@ window.addEventListener('message', async function (event) {
         }
     } catch (error) {
         console.error(error);
+        toast(error,'Peoples Choice Extender');
         sendVoteErrorToExtension();
     }
 });
