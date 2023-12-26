@@ -252,9 +252,11 @@ function checkVotedUpdateUi() {
 // Function to check if the element is present and log to console
 function initializeExtension() {
   console.log('INITIALIZE EXTENSION [INJECT] ');
+  injectScript(chrome.runtime.getURL('lib/inject_toastability.js'), 'body', 'toastability');
+  injectScript(chrome.runtime.getURL('lib/inject_contractabi_contractmapping.js'), 'body', 'contractData');
   injectScript(chrome.runtime.getURL('lib/ethers.min-6.8.1.js'), 'body', 'ethersScript');
-  injectScript(chrome.runtime.getURL('lib/inject_metamaskInteraction.js'), 'body', 'metamaskInteractionScript');
-  injectScript(chrome.runtime.getURL('lib/inject_contentPageInteractions.js'), 'body', 'contentPageInteractionsScript');
+  injectScript(chrome.runtime.getURL('lib/inject_metamaskInteraction.js'), 'body', 'metamaskInteractions');
+  injectScript(chrome.runtime.getURL('lib/inject_contentPageInteractions.js'), 'body', 'contentPageInteractions');
   
 }
 
@@ -265,31 +267,35 @@ function initializeUi()
   if (element) {
   injectUiElements();
   checkVotedUpdateUi();
-  //observer.disconnect();
   }
 }
 
+function initializeOnPageReady() {
+  const targetElementId = 'top-level-buttons-computed';
+  
+  const observer = new MutationObserver(mutations => {
+      const element = document.getElementById(targetElementId);
+      if (element) {
+        initializeExtension();
+        initializeUi();
+          observer.disconnect(); // Stop observing once the element is found
+      }
+  });
 
-
-
-
-// // Create a new instance of MutationObserver and provide a callback function
-// const observer = new MutationObserver(initializeUi);
-
-// // Start observing the document body for changes in the child elements
-// observer.observe(document.body, { childList: true, subtree: true });
-
-// // Optional: Call checkAndLogElement initially in case the element is already there
-// initializeExtension();
-
-initializeExtension();
+  observer.observe(document.body, {
+      childList: true,
+      subtree: true
+  });
+}
 
 
   //Listen for messages from the injected script to know if the page has been navigated etc.
   window.addEventListener('message', function(event) {
     if (event.source === window && event.data.type && event.data.type == "PCE_SITE_NAVIGATED") {
       initializeExtension();
-
-    initializeUi();
+      initializeUi();
     }
   });
+
+initializeOnPageReady();
+

@@ -1,3 +1,9 @@
+.replaceable{
+  display: flex;
+  min-width: 4rem;
+  justify-content: space-around;
+}
+
 .pce-ext-button {
     background: none; 
     cursor: pointer; 
@@ -6,10 +12,18 @@
     margin: 0; 
     width: 3rem; 
     user-select: none; 
-    border: white solid 1px; 
+    border: rgba(50, 50, 50, 0.425) solid 1px; 
     height: 3rem; 
     border-radius: 20%;
     transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+  }
+
+  .pce-ext-button.like{
+    border-radius: 10px 0 0 10px;
+  }
+
+  .pce-ext-button.dislike{
+   border-radius: 0 10px 10px 0; 
   }
 
   .pce-ext-button.voted{
@@ -17,10 +31,13 @@
   }
 
   .pce-ext-button:hover {
-    background-color: #f0f0f0; /* Hover background color */
-    border-color: #d0d0d0; /* Hover border color */
+    background-color: #5e5e5e; /* Hover background color */
+    border-color: #5e5e5ea1; /* Hover border color */
   }
 
+
+
+/* SPINNER */
   
 @keyframes pce-ext-jump {  
 25% {
@@ -65,35 +82,42 @@ animation-delay: 500ms;
 
 
 /* Default toast style */
+
 .pce-toastContain {
   position: fixed;
-  left: calc(50% - 200px);
-  bottom: 50px;
+  right: 20px; /* Position to the top right with 20px distance from the edge */
+  top: 20px; /* Distance from the top edge */
   width: 400px;
+  z-index: 9999; /* High z-index to ensure it's above other elements */
 }
+
 .pce-toast {
   font-family: monospace;
   font-size: medium;
+  color: white;
   opacity: 0;
   min-height: 30px;
   padding: 5px;
-  margin-top: -42px;
-  background-color: rgba(224, 255, 255, 0.582);
+  background-color: rgba(80, 80, 80, 0.873);
   box-shadow: 0 3px 4px #0004;
   text-align: center;
   line-height: 30px;
-  transform: scale(0.95) translateY(50px);
-  border-radius: 0 0 8px 8px;
+  transform: scale(0.95) translateY(-50px); /* Start above the visible area */
+  border-radius: 8px;
   transition:
-    margin-top 0.7s,
     transform 0.7s,
     opacity 0.7s;
-  
 }
+
 .pce-toast.open {
-  margin-top: 0;
-  transform: scale(1) translateY(0);
+  transform: scale(1) translateY(0); /* Slide down for opening */
   opacity: 1;
+}
+
+/* Modify closing animation */
+.pce-toast:not(.open) {
+  transform: scale(0.95) translateY(-50px); /* Slide up for closing */
+  opacity: 0;
 }
 
 /* Custom Toast Style */
@@ -102,12 +126,10 @@ animation-delay: 500ms;
   border-color: red;
 }
 
-.pce-toast-title{
-  background-color: rgba(224, 255, 255, 0.582);
-  border-radius: 8px 8px 0px 0px;
+.pce-toast-title {
+  border-radius: 8px 8px 0 0;
   display: flex;
   justify-content: center;
-  /* margin: 0.5rem; */
   font-family: monospace;
   font-size: large;
 }

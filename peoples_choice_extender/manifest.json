@@ -24,7 +24,9 @@
   "web_accessible_resources": [
     {
         "resources": [
-            "lib/inject_metamaskInteraction.js",
+            "lib/inject_toastability.js",
+            "lib/inject_contractabi_contractmapping.js",
+              "lib/inject_metamaskInteraction.js",
             "lib/inject_contentPageInteractions.js",
             "styles/buttonStyles.css",
             "lib/ethers.min-6.8.1.js"
