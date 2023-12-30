@@ -12,6 +12,10 @@
     transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
   }
 
+  .pce-ext-button.voted{
+    background-color: rgb(99, 99, 99);
+  }
+
   .pce-ext-button:hover {
     background-color: #f0f0f0; /* Hover background color */
     border-color: #d0d0d0; /* Hover border color */
@@ -54,4 +58,56 @@ animation-delay: 250ms;
 
 #pce-ext-inject .typing span:nth-child(3) {
 animation-delay: 500ms;
+}
+
+
+/* TOAST */
+
+
+/* Default toast style */
+.pce-toastContain {
+  position: fixed;
+  left: calc(50% - 200px);
+  bottom: 50px;
+  width: 400px;
+}
+.pce-toast {
+  font-family: monospace;
+  font-size: medium;
+  opacity: 0;
+  min-height: 30px;
+  padding: 5px;
+  margin-top: -42px;
+  background-color: rgba(224, 255, 255, 0.582);
+  box-shadow: 0 3px 4px #0004;
+  text-align: center;
+  line-height: 30px;
+  transform: scale(0.95) translateY(50px);
+  border-radius: 0 0 8px 8px;
+  transition:
+    margin-top 0.7s,
+    transform 0.7s,
+    opacity 0.7s;
+  
+}
+.pce-toast.open {
+  margin-top: 0;
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Custom Toast Style */
+.pce-toast.critical {
+  background-color: pink;
+  border-color: red;
+}
+
+.pce-toast-title{
+  background-color: rgba(224, 255, 255, 0.582);
+  border-radius: 8px 8px 0px 0px;
+  display: flex;
+  justify-content: center;
+  /* margin: 0.5rem; */
+  font-family: monospace;
+  font-size: large;
 }
